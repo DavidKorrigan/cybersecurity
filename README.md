@@ -2,6 +2,7 @@
 This repository will contain notes, tricks and commands useful for cybersecurity.
 
 Categories:
-- Powershell
+- Windows PowerShell
+- Windows shell
 - Bash
 - Tooling
