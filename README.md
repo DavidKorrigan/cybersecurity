@@ -1,5 +1,5 @@
 # cybersecurity
-This repository will contain notes, tricks and commands useful for cybersecurity.
+This repository will contain notes, tricks and useful commands for cybersecurity.
 
 Categories:
 - Windows PowerShell
