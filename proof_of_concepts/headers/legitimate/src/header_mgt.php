@@ -1,12 +1,7 @@
 <?php
-echo "<h2>Set cookie</h2>";
 
 $cookie_name = "session";
 $cookie_value = guidv4();
-
-echo "<p>Cookie name: " . $cookie_name . "</p>";
-
-echo "<p>Cookie value: " . $cookie_value . "</p>";
 
 # httponly block browser to give cookie to JavaScripts
 setcookie(
@@ -18,8 +13,6 @@ setcookie(
         $secure = false,
         $httponly = false
 );
-
-cors();
 
 function guidv4($data = null) {
     // Generate 16 bytes (128 bits) of random data or use the data passed into the function.
@@ -34,6 +27,7 @@ function guidv4($data = null) {
     // Output the 36 character UUID.
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
+cors();
 
 /**
  *  An example CORS-compliant method.  It will allow any GET, POST, or OPTIONS requests from any
@@ -52,40 +46,11 @@ function cors() {
 	header('Access-Control-Allow-Credentials: true');
 	header('Access-Control-Max-Age: 86400');    // cache for 1 day
 	header("Access-Control-Allow-Methods: GET");
-		
+	//header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
 
-    
-    // Access-Control headers are received during OPTIONS requests
-    if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-        
-        if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
-            // may also be using PUT, PATCH, HEAD etc
-            header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-        
-        if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-            header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-    
-        exit(0);
-    }
-    
-    echo "You have CORS!";
 }
 
-
 ?>
-<script>
-	function listCookies() {
-		var theCookies = document.cookie.split(';');
-		var aString = '';
-		for (var i = 1 ; i <= theCookies.length; i++) {
-			aString += i + ' ' + theCookies[i-1] + "\n";
-		}
-		return aString;
-	}
-	alert(listCookies())
-
-</script>
-
 <html>
 <head>
 <!--
@@ -103,6 +68,7 @@ Header Set Content-Security-Policy "default-src 'none'; script-src 'self'; conne
 
  -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="http://172.17.0.3/gotcha.js">sendMessage()</script>
 <script>
 $(document).ready(function(){
   $("p").click(function(){
@@ -113,9 +79,21 @@ $(document).ready(function(){
 </head>
 <body>
 
+
 <p>If you click on me, I will disappear.</p>
 <p>Click me away!</p>
 <p>Click me too!</p>
+<script>
+	function listCookies() {
+		var theCookies = document.cookie.split(';');
+		var aString = '';
+		for (var i = 1 ; i <= theCookies.length; i++) {
+			aString += i + ' ' + theCookies[i-1] + "\n";
+		}
+		return aString;
+	}
+	alert(listCookies())
 
+</script>
 </body>
 </html>
