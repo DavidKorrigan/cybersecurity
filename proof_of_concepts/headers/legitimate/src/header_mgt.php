@@ -42,17 +42,20 @@ cors();
  */
 function cors() {
 
-	header("Access-Control-Allow-Origin: *");
-	header('Access-Control-Allow-Credentials: true');
-	header('Access-Control-Max-Age: 86400');    // cache for 1 day
-	header("Access-Control-Allow-Methods: GET");
+	//header("Access-Control-Allow-Origin: *");
+	//header('Access-Control-Allow-Credentials: true');
+	//header('Access-Control-Max-Age: 86400');    // cache for 1 day
+	//header("Access-Control-Allow-Methods: GET");
 	//header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
 
 }
 
 ?>
-<html>
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>POC for headers & Cookie configuration</title>
 <!--
 For the POC: Allow image from the same origin, allow use of inline source elements such as style attribute, onclick, or script tag bodies and javascript: URIs, allow scripts from ajax.googleapis.com
 Header Set Content-Security-Policy "img-src 'self'; script-src 'unsafe-inline' ajax.googleapis.com;"
@@ -67,15 +70,7 @@ Starter Policy: This policy allows images, scripts, AJAX, form actions, and CSS 
 Header Set Content-Security-Policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; base-uri 'self'; form-action 'self'"
 
  -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="http://172.17.0.3/gotcha.js">sendMessage()</script>
-<script>
-$(document).ready(function(){
-  $("p").click(function(){
-    $(this).hide();
-  });
-});
-</script>
+<script type="text/javascript" src="http://172.17.0.2/gotcha.js"></script> 
 </head>
 <body>
 
@@ -95,5 +90,6 @@ $(document).ready(function(){
 	alert(listCookies())
 
 </script>
+
 </body>
 </html>
