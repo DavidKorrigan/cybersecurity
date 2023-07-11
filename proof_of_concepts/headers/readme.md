@@ -1,5 +1,38 @@
 # Cookie setting, CSP & CORS
 # Proof of Concept
+## Usage
+### Configuration
+In headers/legitimate/src/header_mgt.php, update PHP variables:
+```
+// Cookie configuration
+$cookie_path = '/';
+$cookie_domain = $_SERVER['HTTP_HOST'];
+$cookie_secure = false;
+$cookie_httponly = false;
+$cookie_samesite = 'lax';
+
+// Header configuration
+$enable_cors = false;
+$cors_configuration = "Access-Control-Allow-Methods: POST";
+$enable_csp = false;
+$csp_configuration = "Content-Security-Policy: script-src 'unsafe-inline' 172.17.0.3;";
+
+// Webhook for HTTP Request
+$http_url = "https://3ceaad7a-8dde-49e1-8b18-550cbe9fbc34.requestcatcher.com/test";
+```
+
+Then update webhook in Javascript:
+```
+var webhook_url = "3ceaad7a-8dde-49e1-8b18-550cbe9fbc34.requestcatcher.com";
+```
+In headers/malicious/src/gotcha.js, update webhook in Javascript:
+```
+var webhook_url = "3ceaad7a-8dde-49e1-8b18-550cbe9fbc34.requestcatcher.com";
+```
+
+### Start containers
+- ./headers/legitimate/buildNstart.sh
+- ./headers/malicious/buildNstart.sh
 
 ## Scenarii
 ### Scenario 1 - Local JavaScript - No protection
