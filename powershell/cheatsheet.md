@@ -105,6 +105,10 @@ Path
 C:\GIT
 ```
 
+- Check path exists
+
+`Get-Location -Path "C:\Users\Administrator\Documents\Passwords"`
+
 - Compute the hash of a file.
 
 `Get-FileHash -Path "C:\GIT\my_password.txt" -Algorithm SHA256`
