@@ -2,7 +2,7 @@
 # Proof of Concept
 ## Usage
 ### Configuration
-In headers/legitimate/src/header_mgt.php, update PHP variables:
+In headers/legitimate/src/index.php, update PHP variables:
 ```
 // Cookie configuration
 $cookie_path = '/';
@@ -12,22 +12,40 @@ $cookie_httponly = false;
 $cookie_samesite = 'lax';
 
 // Header configuration
-$enable_cors = false;
-$cors_configuration = "Access-Control-Allow-Methods: POST";
 $enable_csp = false;
 $csp_configuration = "Content-Security-Policy: script-src 'unsafe-inline' 172.17.0.3;";
 
 // Webhook for HTTP Request
 $http_url = "https://3ceaad7a-8dde-49e1-8b18-550cbe9fbc34.requestcatcher.com/test";
+
+// Send a HTTP request from server to the webhook with cookie value
+$enable_server_request = false;
+
 ```
 
 Then update webhook in Javascript:
 ```
 var webhook_url = "3ceaad7a-8dde-49e1-8b18-550cbe9fbc34.requestcatcher.com";
 ```
+
+In headers/legitimate/src/read_cookie.php, update PHP variables:
+
+```
+// Header configuration
+$enable_cors = true;
+$cors_configuration = "Access-Control-Allow-Origin: http://172.17.0.2";
+```
+
 In headers/malicious/src/gotcha.js, update webhook in Javascript:
 ```
 var webhook_url = "3ceaad7a-8dde-49e1-8b18-550cbe9fbc34.requestcatcher.com";
+```
+
+In headers/malicious/src/index.php, update PHP variables:
+```
+// Configuration to load external resource in PHP
+$external_resource_url = "http://172.17.0.2/read_cookie.php";
+$enable_load_external_resource = false;
 ```
 
 ### Start containers
@@ -120,7 +138,7 @@ Cookie is sent by the local & external Javascript to the Webhook.
     - HttpOnly=true
     - SameSite=None
 
-Cookie is only sent to the Webhook via HTTP request.
+Cookie is only sent to the Webhook via server side HTTP request.
 ### Scenario 11 - HTTP Request - External link - HttpOnly=true
 Link to the Webhook
 
@@ -129,7 +147,7 @@ Link to the Webhook
     - HttpOnly=true
     - SameSite=None
 
-Cookie is not forwarded to exteral link.
+Cookie is not forwarded to external link.
 ### Scenario 12 - HTTP Request - Internal link - No Protection
 Internal link to read_cookie.php
 
@@ -141,10 +159,10 @@ Internal link to read_cookie.php
 Cookie is accessible on read_cookie.php.
 
 Cookie is sent by the local & external Javascript to the Webhook.
-### Scenario 13 - HTTP Request - Internal link - HttpOnly=true - path=header_mgt.php
+### Scenario 13 - HTTP Request - Internal link - HttpOnly=true - path=index.php
 Internal link to read_cookie.php
 
-    - path=/read_cookie.php
+    - path=/index.php
     - Secure=false
     - HttpOnly=true
     - SameSite=None
@@ -205,3 +223,21 @@ Go to http://172.17.0.3/external_redirect.php
     - SameSite=Lax
 
 Cookie is accessible on read_cookie.php.
+### SScenario 20 - CORS - Enable for Domain 1
+Go to http://172.17.0.3/index.php
+
+    - Access-Control-Allow-Origin: http://172.17.0.2
+
+Message: "This is a resource from domain 1" is not displayed
+### Scenario 21 - CORS - Wildcard
+Go to http://172.17.0.3/index.php
+
+    - Access-Control-Allow-Origin: *
+
+Message: "This is a resource from domain 1" is displayed
+### Scenario 22 - CORS - Enable for Domain 2
+Go to http://172.17.0.3/index.php
+
+    - Access-Control-Allow-Origin: http://172.17.0.3
+
+Message: "This is a resource from domain 1" is displayed

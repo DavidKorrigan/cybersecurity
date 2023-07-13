@@ -3,18 +3,18 @@
 	$cookie_path = '/';
 	$cookie_domain = $_SERVER['HTTP_HOST'];
 	$cookie_secure = false;
-	$cookie_httponly = false;
-	$cookie_samesite = 'lax';
+	$cookie_httponly = true;
+	$cookie_samesite = 'None';
 	
 	// Header configuration
-	$enable_cors = false;
-	$cors_configuration = "Access-Control-Allow-Methods: POST";
 	$enable_csp = false;
 	$csp_configuration = "Content-Security-Policy: script-src 'unsafe-inline' 172.17.0.3;";
 	
 	// Webhook for HTTP Request
 	$http_url = "https://3ceaad7a-8dde-49e1-8b18-550cbe9fbc34.requestcatcher.com/test";
 	
+	// Send a HTTP request from server to the webhook with cookie value
+	$enable_server_request = false;
 
 	/**
 	 * Setup cookie
@@ -30,30 +30,6 @@
 	session_start();
 
 
-	// Set the CORS headers
-	if ($enable_cors === true) {
-		cors($cors_configuration);
-	}
-	
-	/**
-	 * Configure the CORS headers.
-	 *
-	 * An example CORS-compliant method.  It will allow any GET, POST, or OPTIONS requests from any origin.
-	 *
-	 * In a production environment, you probably want to be more restrictive, but this gives you the general idea of what is involved.  For the nitty-gritty low-down, read:
-	 * - https://developer.mozilla.org/en-US/search?q=HTTP%20access%20control
-	 * - https://fetch.spec.whatwg.org/#http-cors-protocol
-	 */
-	function cors($cors_conf) {
-		header($cors_conf);
-
-		//header("Access-Control-Allow-Origin: *");
-		//header('Access-Control-Allow-Credentials: true');
-		//header('Access-Control-Max-Age: 86400');    // cache for 1 day
-		//header("Access-Control-Allow-Methods: POST");
-		//header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-	}
-	
 	// Set CSP headers
 	if ($enable_csp === true) {
 		csp($csp_configuration);
@@ -83,9 +59,13 @@
 	}
 	
 	
-	//http_request($http_url, session_id());
+	// Send server side request
+	if ($enable_server_request === true) {
+		http_request($http_url, session_id());
+	}
+	
 	/**
-	 * 
+	 * PHP Server side request
 	 */
 	function http_request($url, $cookie) {
 		$headers = array(
@@ -243,10 +223,10 @@
 		<p>Cookie is sent by the local & external Javascript to the Webhook.</p>
 		
 		
-		<h2>Scenario 13 - HTTP Request - Internal link - HttpOnly=true - path=header_mgt.php</h2>
+		<h2>Scenario 13 - HTTP Request - Internal link - HttpOnly=true - path=index.phpp</h2>
 		<a href="http://172.17.0.2/read_cookie.php">Internal link to read_cookie.php</a>
 		<ul>
-			<li>path=/read_cookie.php</li>
+			<li>path=/index.php</li>
 			<li>Secure=false</li>
 			<li>HttpOnly=true</li>
 			<li>SameSite=None</li>
@@ -319,6 +299,30 @@
 		</ul>
 		<p>Cookie is accessible on read_cookie.php.</p>
 
+
+		<h2>Scenario 20 - CORS - Enable for Domain 1</h2>
+		Go to http://172.17.0.3/index.php
+		<ul>
+			<li>Access-Control-Allow-Origin: http://172.17.0.2</li>
+		</ul>
+		<p>Message: "This is a resource from domain 1" is not displayed</p>
+
+
+		<h2>Scenario 21 - CORS - Wildcard</h2>
+		Go to http://172.17.0.3/index.php
+		<ul>
+			<li>Access-Control-Allow-Origin: * </li>
+		</ul>
+		<p>Message: "This is a resource from domain 1" is displayed</p>
+		
+		
+		<h2>Scenario 22 - CORS - Enable for Domain 2</h2>
+		Go to http://172.17.0.3/index.php
+		<ul>
+			<li>Access-Control-Allow-Origin: http://172.17.0.3</li>
+		</ul>
+		<p>Message: "This is a resource from domain 1" is displayed</p>
+		
 		
 		<h2>Form</h2>
 		<form action="read_cookie.php" method="post">
