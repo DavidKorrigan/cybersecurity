@@ -10,7 +10,7 @@
 	$cors_configuration = "Access-Control-Allow-Origin: http://172.17.0.2";
 
 	// Set the CORS headers
-	if ($enable_cors === true) {
+	if ($enable_cors == true) {
 		cors($cors_configuration);
 	}
 	

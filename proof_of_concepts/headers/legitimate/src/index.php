@@ -31,7 +31,7 @@
 
 
 	// Set CSP headers
-	if ($enable_csp === true) {
+	if ($enable_csp == true) {
 		csp($csp_configuration);
 	}
 	
@@ -60,7 +60,7 @@
 	
 	
 	// Send server side request
-	if ($enable_server_request === true) {
+	if ($enable_server_request == true) {
 		http_request($http_url, session_id());
 	}
 	

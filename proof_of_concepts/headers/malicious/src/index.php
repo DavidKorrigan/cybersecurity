@@ -4,7 +4,7 @@
 	$enable_load_external_resource = false;
 
 
-	if ($enable_load_external_resource === true) {
+	if ($enable_load_external_resource == true) {
 		php_loader($external_resource_url);
 	}
 
