@@ -8,6 +8,12 @@
 	
 	// Header configuration
 	$enable_csp = false;
+	/**
+	 * Possible values:
+	 * Content-Security-Policy: default-src 'self';
+	 * Content-Security-Policy: script-src 'unsafe-inline';
+	 * Content-Security-Policy: script-src 'unsafe-inline' 172.17.0.3;
+	 */
 	$csp_configuration = "Content-Security-Policy: script-src 'unsafe-inline' 172.17.0.3;";
 	
 	// Webhook for HTTP Request
@@ -42,10 +48,10 @@
 	 * Header Set Content-Security-Policy "script-src 'unsafe-inline' 172.17.0.3;"
 
 	 * Allow everything but only from the same origin
-	 * Header Set Content-Security-Policy "default-src 'self'"
+	 * Header Set Content-Security-Policy "default-src 'self';"
 
 	 * Only Allow Scripts from the same origin
-	 * Header Set Content-Security-Policy "script-src" 'self';"
+	 * Header Set Content-Security-Policy "script-src 'self';"
 
 	 * Starter Policy: This policy allows images, scripts, AJAX, form actions, and CSS from the same origin, and does not allow any other resources to load (eg object, frame, media, etc). It is a good starting point for many 	sites.
 	 * Header Set Content-Security-Policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; base-uri 'self'; form-action 'self'"
@@ -208,7 +214,7 @@
 			<li>HttpOnly=true</li>
 			<li>SameSite=None</li>
 		</ul>
-		<p>Cookie is not forwarded to exteral link.</p>		
+		<p>Cookie is not forwarded to external link.</p>		
 		
 
 		<h2>Scenario 12 - HTTP Request - Internal link - No Protection</h2>
