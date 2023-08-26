@@ -2,7 +2,7 @@
 	// Header configuration
 	$enable_cors = true;
 	/**
-	 * Possible value
+	 * Possible values:
 	 * Access-Control-Allow-Origin: *
 	 * Access-Control-Allow-Origin: http://172.17.0.2
 	 * Access-Control-Allow-Origin: http://172.17.0.3
