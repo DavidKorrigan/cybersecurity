@@ -3,7 +3,7 @@ import struct
 
 class IP:
     '''
-    Class that can read a packet and parse the header in fields.
+    Class that can read IP packets and parse the header in fields.
     Binary is get into data structure using struct module.
     '''
     def __init__(self, socket_buffer=None):
@@ -27,7 +27,7 @@ class IP:
         self.dst_address = ipaddress.ip_address(self.dst)
 
         # Map protocol constants to their names
-        self.protocol_map = {1: "ICMP", 6: "TCP", 17: "UDP"}
+        self.protocol_map = {1: "ICMP", 2: "IGMP", 6: "TCP", 17: "UDP"}
 
         try:
             self.protocol = self.protocol_map[self.protocol_num]

@@ -4,6 +4,8 @@ import sys
 
 import IP_decoder_ctypes
 import IP_decoder_struct
+from ICMP_decoder import ICMP
+from TCP_decoder import TCP
 
 # Possible values: ctypes or struct
 IP_DECODER = "struct"
@@ -41,15 +43,27 @@ def main(host):
                 ip_header = IP_decoder_struct.IP(raw_buffer[0:20])
 
             if ip_header.protocol == "ICMP":
-                # Print ICMP decoding.
-                print(f'Protocol {ip_header.protocol} version {ip_header.ver} - '
+                offset = ip_header.ihl * 4
+                icmp_header = ICMP(raw_buffer[offset:offset + 8])
+                # Identify default ICMP code
+                if icmp_header.type == 3 or icmp_header.type == 5 or icmp_header.type == 11 or icmp_header.type == 12:
+                    icmp_code_name = " & Code: " + icmp_header.code_name
+                else:
+                    icmp_code_name = ""
+                # Print ICMP decoding
+                print(f'IPv{ip_header.ver} - Protocol {ip_header.protocol} - '
+                      f'Type: {icmp_header.type_name}{icmp_code_name} - '
                       f'Header length: {ip_header.ihl} Time To Live: {ip_header.ttl} - '
                       f'{ip_header.src_address} -> {ip_header.dst_address}')
+            elif ip_header.protocol == "TCP":
+                tcp_header = TCP(raw_buffer[0:20])
+                print(f'IPv{ip_header.ver} - Protocol {ip_header.protocol} - '
+                      f'{ip_header.src_address}:{tcp_header.src_port} -> {ip_header.dst_address}:{tcp_header.dst_port} - '
+                      f'Flags set: {tcp_header.flags}')
             else:
                 # Print the detected protocol and hosts.
-                print("Protocol: %s %s -> %s" % (ip_header.protocol, ip_header.src_address, ip_header.dst_address))
-
-
+                print(f'IPv{ip_header.ver} - Protocol {ip_header.protocol} - '
+                      f'{ip_header.src_address} -> {ip_header.dst_address}')
 
     except KeyboardInterrupt:
         # Turn off promiscuous mode for MS Windows machine
@@ -63,5 +77,5 @@ if __name__ == '__main__':
         host = sys.argv[1]
     else:
         # Host to listen on
-        host = '192.168.178.31'
+        host = '192.168.178.44'
     main(host)

@@ -61,7 +61,7 @@ class Scanner:
                     # Now check for the TYPE 3 and CODE 3 which indicates
                     # A host is up but no port available to talk to
                     if icmp_header.code == 3 and icmp_header.type == 3:
-                        # check to make sure we are receiving the response that lands in our subnet
+                        # Check to make sure we are receiving the response that lands in our subnet
                         if ipaddress.ip_address(ip_header.src_address) in ipaddress.IPv4Network(SUBNET):
                             # Make sure it has the signature from the message sent.
                             if raw_buffer[len(raw_buffer) - len(MESSAGE):] == bytes(MESSAGE, 'utf8'):
@@ -89,8 +89,8 @@ if __name__ == '__main__':
         # Host to listen on
         host = sys.argv[1]
     else:
-        # Host to listen on
-        host = '192.168.178.31'
+        # Default host to listen on
+        host = 'xx.xx.xx.xx'
     s = Scanner(host)
     time.sleep(5)
 
