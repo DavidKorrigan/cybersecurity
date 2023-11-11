@@ -17,12 +17,12 @@ if __name__ == '__main__':
     args = argParser.parse_args()
 
     if args.operation == "network_scanning":
-        scan = NetworkScanner(args.local_ip, args.target)
+        scanner = NetworkScanner(args.local_ip, args.target)
         time.sleep(5)
 
-        t = threading.Thread(target=scan.udp_sender())
-        scan.start()
-        scan.scan()
+        t = threading.Thread(target=scanner.udp_sender())
+        t.start()
+        scanner.scan()
 
     elif args.operation == "port_scanning":
         print("x")
