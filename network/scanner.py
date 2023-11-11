@@ -9,20 +9,15 @@ import IP_decoder_ctypes
 import IP_decoder_struct
 from ICMP_decoder import ICMP
 
-# Subnet to target
-SUBNET = '192.168.178.0/24'
+
 # Define signature to check responses are from the UDP packets sent
 MESSAGE = 'ONLINE'
 
-# This function iterates all the IPs from the subnet targeted and sends UDP datagrams
-def udp_sender():
-    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sender:
-        for ip in ipaddress.ip_network(SUBNET).hosts():
-            sender.sendto(bytes(MESSAGE, 'utf8'), (str(ip), 65212))
 
-class Scanner:
-    def __init__(self, host):
+class NetworkScanner:
+    def __init__(self, host, target):
         self.host = host
+        self.target = target
 
         # Create raw socket, bind to public interface
         if os.name == 'nt':
@@ -41,7 +36,7 @@ class Scanner:
         if os.name == 'nt':
             self.socket.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
 
-    def sniff(self):
+    def scan(self):
 
         host_up = set([f'{str(self.host)} *'])
         try:
@@ -62,7 +57,7 @@ class Scanner:
                     # A host is up but no port available to talk to
                     if icmp_header.code == 3 and icmp_header.type == 3:
                         # Check to make sure we are receiving the response that lands in our subnet
-                        if ipaddress.ip_address(ip_header.src_address) in ipaddress.IPv4Network(SUBNET):
+                        if ipaddress.ip_address(ip_header.src_address) in ipaddress.IPv4Network(self.target):
                             # Make sure it has the signature from the message sent.
                             if raw_buffer[len(raw_buffer) - len(MESSAGE):] == bytes(MESSAGE, 'utf8'):
                                 target = str(ip_header.src_address)
@@ -78,22 +73,14 @@ class Scanner:
             print('\nUser interrupted scan.')
 
             if host_up:
-                print(f'\n\nSummary: Hosts up on {SUBNET}')
+                print(f'\n\nSummary: Hosts up on {self.target}')
                 for host in host_up:
                     print(f'{host}')
                 print('')
             sys.exit()
 
-if __name__ == '__main__':
-    if len(sys.argv) == 2:
-        # Host to listen on
-        host = sys.argv[1]
-    else:
-        # Default host to listen on
-        host = 'xx.xx.xx.xx'
-    s = Scanner(host)
-    time.sleep(5)
-
-    t = threading.Thread(target=udp_sender())
-    t.start()
-    s.sniff()
+    # This function iterates all the IPs from the subnet targeted and sends UDP datagrams
+    def udp_sender(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sender:
+            for ip in ipaddress.ip_network(self.target).hosts():
+                sender.sendto(bytes(MESSAGE, 'utf8'), (str(ip), 65212))
