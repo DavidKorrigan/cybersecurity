@@ -13,7 +13,9 @@ class PortScanner:
             port_range = ip_range.split("-")
             self.ports = range(int(port_range[0]), int(port_range[1]))
         if ip_list is not None:
-            self.ports = ip_list
+            self.ports = ip_list.split(",")
+            for i in range(0, len(self.ports)):
+                self.ports[i] = int(self.ports[i])
 
     def syn_scan(self):
         try:

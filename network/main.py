@@ -34,8 +34,12 @@ if __name__ == '__main__':
     elif args.operation == "port_scanning":
         if args.target is not None:
             if args.range is not None or args.list is not None:
-                scanner = PortScanner(args.target, args.range)
-                scanner.syn_scan()
+                if args.range is not None:
+                    scanner = PortScanner(args.target, ip_range=args.range)
+                    scanner.syn_scan()
+                if args.list is not None:
+                    scanner = PortScanner(args.target, ip_list=args.list)
+                    scanner.syn_scan()
             else:
                 print("Range or list of ports must be provided.")
                 sys.exit(1)
