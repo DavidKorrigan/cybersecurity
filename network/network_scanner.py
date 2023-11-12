@@ -2,8 +2,6 @@ import ipaddress
 import socket
 import os
 import sys
-import threading
-import time
 
 import IP_decoder_ctypes
 import IP_decoder_struct
@@ -26,15 +24,18 @@ class NetworkScanner:
         else:
             # Linux forces to specify which packets to sniff (ICMP here)
             socket_protocol = socket.IPPROTO_ICMP
+        try:
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)
+            self.socket.bind((host, 0))
+            # Include the IP header in the capture
+            self.socket.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
 
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)
-        self.socket.bind((host, 0))
-        # Include the IP header in the capture
-        self.socket.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
-
-        # Turn on promiscuous mode for MS Windows machine
-        if os.name == 'nt':
-            self.socket.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
+            # Turn on promiscuous mode for MS Windows machine
+            if os.name == 'nt':
+                self.socket.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
+        except Exception as e:
+            print(f'An error occurred:\n{e}')
+            sys.exit(1)
 
     def scan(self):
 
@@ -64,7 +65,6 @@ class NetworkScanner:
                                 if target != self.host and target not in host_up:
                                     host_up.add(str(ip_header.src_address))
                                     print("Host Up: %s" % target)
-
         except KeyboardInterrupt:
             # Turn off promiscuous mode for MS Windows machine
             if os.name == 'nt':
@@ -81,6 +81,10 @@ class NetworkScanner:
 
     # This function iterates all the IPs from the subnet targeted and sends UDP datagrams
     def udp_sender(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sender:
-            for ip in ipaddress.ip_network(self.target).hosts():
-                sender.sendto(bytes(MESSAGE, 'utf8'), (str(ip), 65212))
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sender:
+                for ip in ipaddress.ip_network(self.target).hosts():
+                    sender.sendto(bytes(MESSAGE, 'utf8'), (str(ip), 65212))
+        except Exception as e:
+            print(f'An error occurred:\n{e}')
+            sys.exit(1)

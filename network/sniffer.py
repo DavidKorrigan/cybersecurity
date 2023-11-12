@@ -7,8 +7,10 @@ import IP_decoder_struct
 from ICMP_decoder import ICMP
 from TCP_decoder import TCP
 
+
 # Possible values: ctypes or struct
 IP_DECODER = "struct"
+
 
 class NetworkSniffer:
     def __init__(self, host):
@@ -22,14 +24,18 @@ class NetworkSniffer:
             # Linux forces to specify which packets to sniff (ICMP here)
             socket_protocol = socket.IPPROTO_ICMP
 
-        self.sniffer = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)
-        self.sniffer.bind((host, 0))
-        # Include the IP header in the capture
-        self.sniffer.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
+        try:
+            self.sniffer = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)
+            self.sniffer.bind((host, 0))
+            # Include the IP header in the capture
+            self.sniffer.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
 
-        # Turn on promiscuous mode for MS Windows machine
-        if os.name == 'nt':
-            self.sniffer.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
+            # Turn on promiscuous mode for MS Windows machine
+            if os.name == 'nt':
+                self.sniffer.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
+        except Exception as e:
+            print(f'An error occurred:\n{e}')
+            sys.exit(1)
 
     def sniff(self):
         try:
@@ -68,7 +74,6 @@ class NetworkSniffer:
                     # Print the detected protocol and hosts.
                     print(f'IPv{ip_header.ver} - Protocol {ip_header.protocol} - '
                           f'{ip_header.src_address} -> {ip_header.dst_address}')
-
         except KeyboardInterrupt:
             # Turn off promiscuous mode for MS Windows machine
             if os.name == 'nt':
