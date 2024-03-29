@@ -1,0 +1,55 @@
+{
+  "61": {
+    "type": "INFO",
+    "XX": "Command successfully executed; 'XX' bytes of data are available and can be requested using GET RESPONSE."
+  },
+  "62": {
+    "type": "WARNING"
+  },
+  "63": {
+    "type": "WARNING"
+  },
+  "64": {
+    "type": "ERROR"
+  },
+  "65": {
+    "type": "ERROR"
+  },
+  "66": {
+    "type": "SECURITY"
+  },
+  "67": {
+    "type": "ERROR"
+  },
+  "68": {
+    "type": "ERROR"
+  },
+  "69": {
+    "type": "ERROR"
+  },
+  "6A": {
+    "type": "ERROR",
+    "83": "Record not found"
+  },
+  "6B": {
+    "type": "ERROR"
+  },
+  "6C": {
+    "type": "ERROR",
+    "XX": "Bad length value in Le; 'XX' is the correct exact Le"
+  },
+  "6D": {
+    "type": "ERROR",
+    "0": "Instruction code not supported or invalid"
+  },
+  "6E": {
+    "type": "ERROR"
+  },
+  "6F": {
+    "type": "ERROR"
+  },
+  "90": {
+    "type": "INFO",
+    "00": "Command successfully executed (OK)."
+  }
+}
