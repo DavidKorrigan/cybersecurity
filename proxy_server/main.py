@@ -18,7 +18,7 @@ import sys
 from _thread import *
 
 LOG_FORMAT = "%(asctime)s: %(levelname)s - %(message)s"
-logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
+logging.basicConfig(filename='logs/proxy_server.log', level=logging.INFO, format=LOG_FORMAT)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--protocol', help="Proxy protocol", default="https", choices=['http', 'https'])
